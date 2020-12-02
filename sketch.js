@@ -22,12 +22,17 @@ let uvindex = [];
 // set which data you want to start from with its session id
 let starting_id = 30;
 let myCanvas;
+
+let canvasWid = 5000;
+let canvasHeight =  0.5*window.innerHeight;
+
+
+
 function setup() {
  myCanvas = document.createElement("canvas");
  myCanvas.id='myCanvas';
-
- myCanvas= createCanvas(5000, 900);
-  
+ myCanvas= createCanvas(canvasWid,canvasHeight);
+  myCanvas.parent("sketch");
   // Request the data from the weather band database
   // To avoid 429, Too Many Requests Error 
   // Replace cors everywhere with proxy forked by Yiting through this repo: https://github.com/Rob--W/cors-anywhere
@@ -35,17 +40,19 @@ function setup() {
 }
 function preload(){
   let url = 'https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24';
-  
+
   // load the json file
   loadJSON(url, gotWeather);
 }
 function draw() {
   background(230,251,255);
   drawGraphs();
+  // getItems();
+
+
 }
 
 function gotWeather(weatherData) {  
-
   // add each weather data to the arrays
   for (i = starting_id; i < weatherData.length; i++) {
     recorded_at.push(weatherData[i].recorded_at);
@@ -83,46 +90,47 @@ function drawGraphs() {
   
   // draw linear graphs for each data to see the trend
   // the mapping is done based on the average range of each weather data
-  text("Weather data from " + recorded_at[0] + "(GMT) and onwards", 30, 40);
-  text("Data collected with a DIY weather station in East Village, NY", 30, 55);
-  text("rainin", 30, 100);
+  text("Weather data from " + recorded_at[0] + "(GMT) and onwards", 30, canvasHeight/9*0.35);
+  text("Data collected with a DIY weather station in East Village, NY", 30, canvasHeight/9*0.55);
+
+  text("rainin", 30, canvasHeight/9);
   for (i = 0; i < recorded_at.length; i++) {
-    let mapped = map(rainin[i], 0, 0.8, 150, 100);
+    let mapped = map(rainin[i], 0, 0.8, canvasHeight/9, canvasHeight/9.25);
     ellipse(130+i, mapped, 0.5, 0.5);        
   }
-  text("dailyrainin", 30, 200);
+  text("dailyrainin", 30, canvasHeight/9*2);
   for (i = 0; i < recorded_at.length; i++) {
-    let mapped = map(dailyrainin[i], 0, 1, 250, 200);
+    let mapped = map(dailyrainin[i], 0, 1, canvasHeight/9*2, canvasHeight/9*2.25);
     ellipse(130+i, mapped, 0.5, 0.5);        
   }
-  text("wind_dir", 30, 300);
+  text("wind_dir", 30, canvasHeight/9*3);
   for (i = 0; i < recorded_at.length; i++) {
-    let mapped = map(wind_dir[i], 0, 315, 350, 300);
+    let mapped = map(wind_dir[i], 0, 315, canvasHeight/9*3, canvasHeight/9*3.25);
     ellipse(130+i, mapped, 0.5, 0.5);      
   }
-  text("windspeedmph", 30, 400);
+  text("windspeedmph", 30, canvasHeight/9*4);
   for (i = 0; i < recorded_at.length; i++) {
-    let mapped = map(windspeedmph[i], 0, 5, 450, 400);
+    let mapped = map(windspeedmph[i], 0, 5, canvasHeight/9*4, canvasHeight/9*4.25);
     ellipse(130+i, mapped, 0.5, 0.5);        
   }
-  text("temperature", 30, 500);
+  text("temperature", 30, canvasHeight/9*5);
   for (i = 0; i < recorded_at.length; i++) {
-    let mapped = map(temperature[i], 10, 70, 550, 500);
+    let mapped = map(temperature[i], 10, 70, canvasHeight/9*5, canvasHeight/9*5.25);
     ellipse(130+i, mapped, 0.5, 0.5);        
   }
-  text("illuminance", 30, 600);
+  text("illuminance", 30, canvasHeight/9*6);
   for (i = 0; i < recorded_at.length; i++) {
-    let mapped = map(illuminance[i], 0, 2500, 650, 600);
+    let mapped = map(illuminance[i], 0, 2500, canvasHeight/9*6, canvasHeight/9*6.25);
     ellipse(130+i, mapped, 0.5, 0.5);        
   }
-  text("uv index", 30, 700);
+  text("uv index", 30, canvasHeight/9*7);
   for (i = 0; i < recorded_at.length; i++) {
-    let mapped = map(uvindex[i], 0, 4, 750, 700);
+    let mapped = map(uvindex[i], 0, 4, canvasHeight/9*7, canvasHeight/9*7.25);
     ellipse(130+i, mapped, 0.5, 0.5);        
   }
-  text("humidity", 30, 800);
+  text("humidity", 30, canvasHeight/9*8);
   for (i = 0; i < recorded_at.length; i++) {
-    let mapped = map(humidity[i], 0, 100, 850, 800);
+    let mapped = map(humidity[i], 0, 100, canvasHeight/9*8, canvasHeight/9*8.25);
     ellipse(130+i, mapped, 0.5, 0.5);        
   }
 }

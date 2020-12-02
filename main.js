@@ -14,16 +14,33 @@ let dateUser = document.getElementById("dateUser");
 let beginDate = document.getElementById("beginDate");
 let endDate = document.getElementById("endDate");
 let reset = document.getElementById("reset");
+let sketch = document.getElementById("sketch"); //div for p5
 
-reset.addEventListener("click",function(){
+reset.addEventListener("click", function () {
     // reset everything 
     dateUser.style.display = "none";
     transactionID.style.display = "none";
     catSelections.style.display = "none";
 })
 
-data.addEventListener("click", function () {
+data.addEventListener("click", selectData);
+catSelections.addEventListener("click", catFun);
+beginDate.addEventListener("change", getBeginDate);
 
+endDate.addEventListener("change", getEndDate);
+
+idUser.addEventListener("click", function () {
+    // idUser.value="";
+    idUser.min = "1";
+    idUser.max = "200";
+    sessionStorage.getItem("maxId", maxId);//need to get from sketch js? 
+
+    //will be changed according to the size of the data 
+})
+
+
+
+function selectData() {
     console.log("dataclicked")
     if (catData.selected) {
         console.log("catdata selected")
@@ -32,6 +49,9 @@ data.addEventListener("click", function () {
         } else {
             catSelections.style.display = "none";
         }
+        // sessionStorage.setItem("catData.selected", catData.selected);
+        return catData.selected;
+
     }
     if (idData.selected) {
         console.log("idData selected")
@@ -40,6 +60,9 @@ data.addEventListener("click", function () {
         } else {
             transactionID.style.display = "none"
         }
+        // sessionStorage.setItem("idData.selected", idData.selected);
+
+        return idData.selected;
     }
 
     if (dateData.selected) {
@@ -47,61 +70,104 @@ data.addEventListener("click", function () {
         if (dateUser.style.display = "none") {
             dateUser.style.display = "block";
         } else {
-            dateUser.style.display = "none"
+            dateUser.style.display = "none";
         }
+
+        // sessionStorage.setItem("dateData.selected", dateData.selected);
+
+        return dateData.selected;
     }
     if (allData.selected) {
         //also reset 
         dateUser.style.display = "none";
         transactionID.style.display = "none";
         catSelections.style.display = "none";
-       
+        return allData.selected;
     }
-});
+}
 
-
-
-catSelections.addEventListener("click", function () {
-
+function catFun() {
     console.log("cat selections chosen")
     if (windDir.selected) {
         console.log("windDir selected");
         // should return the value 
-    
+        sessionStorage.setItem("windDir.selected", windDir.selected);
+        return windDir.selected;
+
     }
     if (windSpeed.selected) {
         console.log("windSpeed selected");
+        sessionStorage.setItem("windSpeed.selected", windSpeed.selected);
+        return windSpeed.selected;
     }
 
     if (rain.selected) {
-        console.log("rain selected")
-   
+        console.log("rain selected");
+        sessionStorage.setItem("rain.selected", rain.selected);
+        return rain.selected;
+
     }
     if (temp.selected) {
-        console.log("temp selected")
-      
+        console.log("temp selected");
+        sessionStorage.setItem("temp.selected", temp.selected);
+        return temp.selected;
+
     }
- 
-});
+
+}
 
 
-beginDate.addEventListener("change",function(){
-    //send the input date out 
-    console.log(beginDate.value);
+// let beginDateVal,endDateVal;
+
+function getBeginDate() {
+    sessionStorage.setItem("beginDate.value", beginDate.value);
+
     return beginDate.value;
 
-});
+}
 
-endDate.addEventListener("change",function(){
-    //send the input date out 
-    
-    console.log(endDate.value);
+function getEndDate() {
+    sessionStorage.setItem("endDate.value", endDate.value);
+
     return endDate.value;
 
-});
+}
 
-idUser.addEventListener("click",function(){
-    // idUser.value="";
-    idUser.min="1";
-    idUser.max="200";//will be changed according to the size of the data 
-})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// scrolling example from https://taufik-nurrohman.js.org/dte-project/full-page-horizontal-scrolling.html
+//https://jsfiddle.net/64p5r459/2/
+//scrolling not working 
+function scrollHorizontally(e) {
+    e = window.event || e;
+    const deltaX = Math.max(-1, Math.min(1, e.deltaX));
+    const deltaY = Math.max(-1, Math.min(1, e.deltaY));
+    // var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+
+    const delta = (deltaX + deltaY) / 2;
+    document.documentElement.scrollLeft += (delta * 30); // Multiplied by 40
+    e.preventDefault();
+}
+if (sketch.addEventListener) {
+    // IE9, Chrome, Safari, Opera
+    sketch.addEventListener('wheel', scrollHorizontally, false);
+    // Firefox
+    sketch.addEventListener('DOMMouseScroll', scrollHorizontally, false);
+} else {
+    // IE 6/7/8
+    sketch.attachEvent('onmousewheel', scrollHorizontally);
+}
