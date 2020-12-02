@@ -19,20 +19,26 @@ let illuminance = [];
 let uva = [];
 let uvb = [];
 let uvindex = [];
-
 // set which data you want to start from with its session id
 let starting_id = 30;
-
+let myCanvas;
 function setup() {
-  createCanvas(5000, 900);
+ myCanvas = document.createElement("canvas");
+ myCanvas.id='myCanvas';
+
+ myCanvas= createCanvas(5000, 900);
   
   // Request the data from the weather band database
-  let url = 'https://cors-anywhere.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24';
+  // To avoid 429, Too Many Requests Error 
+  // Replace cors everywhere with proxy forked by Yiting through this repo: https://github.com/Rob--W/cors-anywhere
+
+}
+function preload(){
+  let url = 'https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24';
   
   // load the json file
   loadJSON(url, gotWeather);
 }
-
 function draw() {
   background(230,251,255);
   drawGraphs();

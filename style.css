@@ -1,7 +1,97 @@
-html, body {
+* {
+  font-family: 'Courier New', Courier, monospace;
+
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
+  position: relative;
+  font-size: large;
 }
+body>div{
+  padding: 20px;
+}
+
+div {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: center;
+
+}
+label{
+  padding: 0 20px;
+  /* text-align: left; */
+
+}
+
+
 canvas {
   display: block;
+}
+
+
+footer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  text-align: center;
+}
+
+
+
+/* button generator: https://www.bestcssbuttongenerator.com/#/10 */
+button,select,option {
+  background: linear-gradient(to bottom, #d0c2ea 5%, #d8bcbc 100%);
+  background-color: #d8bcbc;
+  border-radius: 13px;
+  display: inline-block;
+  cursor: pointer;
+  color: white;
+
+  font-size: large;
+  font-weight: bold;
+  padding: 13px 16px;
+  text-decoration: none;
+  border-style: none;
+}
+
+button:hover,select:hover,option:hover {
+  background: linear-gradient(to bottom, #d0c2ea 20%, #d8bcbc 100%);
+  background-color: #c29595;
+  color: black;
+}
+
+button:active,select:active,option:active {
+  position: relative;
+  top: 1px;
+}
+
+
+/* textbox generator: http://doodlenerd.com/html-control/css-textbox-generator */
+input {
+  padding: 10px;
+  font-size: large;
+  border-width: 3px;
+  border-color: #CCCCCC;
+  background-color: #FFFFFF;
+  color: #d8bcbc;
+  border-style: solid;
+  border-radius: 0px;
+  box-shadow: -50px 0px 0px rgba(66, 66, 66, .0);
+  text-shadow: -50px 0px 0px rgba(255, 255, 255, .0);
+}
+
+input:focus {
+  outline: none;
+}
+
+
+/* display toggle */
+#transactionID,#catSelections,#dateUser{
+  display: none;
 }

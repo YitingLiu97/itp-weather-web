@@ -1,12 +1,60 @@
-<!DOCTYPE html><html lang="en"><head>
-    <script src="p5.js"></script>
-    <script src="p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8">
+<!DOCTYPE html>
+<html lang="en">
 
-  </head>
-  <body>
-    <script src="sketch.js"></script>
-  
+<head>
+  <script src="p5.js"></script>
+  <script src="p5.sound.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
 
-</body></html>
+</head>
+
+<body>
+  <!-- MacAddress is already filled so I wont include? -->
+  <div id="dataSelections">
+    <label for="data">Get Data by:</label>
+    <select id="data" name="data">
+      <option value="all" id="allData">all</option>
+      <option value="transactionID" id="idData">id</option>
+      <option value="cat" id="catData">category</option>
+      <option value="date" id="dateData">date</option>
+    </select>
+  </div>
+  <!-- show if transactionID is selected -->
+  <div id="transactionID">
+    <label for="TranscationID">TranscationID:</label>
+    <input type="number" id="idUser" name="idUser" value="30">
+  </div>
+
+  <!-- show if category is selected -->
+  <div id="catSelections">
+    <select name="data">
+      <option value="windDir" id="windDir">windDir</option>
+      <option value="windSpeed" id="windSpeed">windSpeed</option>
+      <option value="rain" id="rain">rain</option>
+      <option value="temp" id="temp">temp</option>
+    </select>
+  </div>
+
+  <!-- show if date is selected -->
+  <div id="dateUser">
+    <label for="fromDate">from</label>
+    <input type="date" id="beginDate" name="beginDate" value="2020-11-25">
+    <label for="toDate">to</label>
+    <input type="date" id="endDate" name="endDate" value="2020-11-27">
+  </div>
+
+  <div> <button id="reset">reset</button>
+  </div>
+
+  <div>
+    <button id="api"> <a href="https://github.com/ITPNYU/Weather-Band/tree/main/database-api">API Details</a> </button>
+  </div>
+  <footer>API Demo created by Yiting Liu, Cy Kim, and Name Atchareeya Jattuporn</footer>
+
+  <!-- <script src="sketch.js"></script> -->
+  <script src="main.js"></script>
+
+</body>
+
+</html>
