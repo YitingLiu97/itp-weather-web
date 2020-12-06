@@ -19,6 +19,8 @@ let illuminance = [];
 let uva = [];
 let uvb = [];
 let uvindex = [];
+
+//let allData = [];
 // set which data you want to start from with its session id
 let starting_id = 30;
 let myCanvas;
@@ -52,159 +54,163 @@ reset.addEventListener("click", function () {
     catSelections.style.display = "none";
 })
 
-data.addEventListener("click", selectData);
-catSelections.addEventListener("click", catFun);
+data.addEventListener("change", selectData);
+catSelections.addEventListener("change", catFun);
 beginDate.addEventListener("change", getBeginDate);
-
 endDate.addEventListener("change", getEndDate);
+allData.addEventListener("change", getAllData);
 
-idUser.addEventListener("click", function () {
-    // idUser.value="";
-    idUser.min = "1";
-    idUser.max = "200";
+idUser.addEventListener("input", getId);
+    
+    //idUser.value="";
+    //idUser.min = "1";
+    //idUser.max = "2000";
   //will be changed according to the size of the data 
-})
+//)
 
 function selectData() {
-    console.log("dataclicked")
+    //console.log("dataclicked")
     if (catData.selected) {
         console.log("catdata selected")
         if (catSelections.style.display = "none") {
-            catSelections.style.display = "block";
+            return catSelections.style.display = "block";
         } else {
-            catSelections.style.display = "none";
+            return catSelections.style.display = "none";
         }
-
-   
-     return catData.selected;
+     //return catData.selected;
 
     }
     if (idData.selected) {
         console.log("idData selected")
         if (transactionID.style.display = "none") {
-            transactionID.style.display = "block";
+            return transactionID.style.display = "block";
         } else {
-            transactionID.style.display = "none"
+            return transactionID.style.display = "none"
         }
-        return idData.selected;
+        //return idData.selected;
     }
 
     if (dateData.selected) {
         console.log("dateData selected")
         if (dateUser.style.display = "none") {
-            dateUser.style.display = "block";
+            return dateUser.style.display = "block";
         } else {
-            dateUser.style.display = "none";
+            return dateUser.style.display = "none";
         }
-      
-    
-        return dateData.selected;
+        //return dateData.selected;
     }
     if (allData.selected) {
         //also reset 
         dateUser.style.display = "none";
         transactionID.style.display = "none";
         catSelections.style.display = "none";
-        return allData.selected;
+        getAllData();
+        //return;
+        //return allData.selected;
     }
 }
-
+// if category is chosen
 function catFun() {
     console.log("cat selections chosen");
-    let catVal;
+    let catVal = "";
+    // let arrayToSend = [];
+
     if (windDir.selected) {
         console.log("windDir selected");
         // should return the value 
         catVal='wind_dir';
-              return windDir.selected;
+        //return windDir.selected;
 
     }
-    if (windSpeed.selected) {
+    else if (windSpeed.selected) {
         console.log("windSpeed selected");
-        catVal='wind_speed';
-
-        return windSpeed.selected;
+        catVal='windspeedmph';
+        //return windSpeed.selected;
     }
 
-    if (rain.selected) {
+    else if (rain.selected) {
         console.log("rain selected");
         catVal='rainin';
 
-        return rain.selected;
+        //return rain.selected;
 
     }
-    if (temp.selected) {
+    else {
         console.log("temp selected");
-        catVal='temp';
-
-        return temp.selected;
+        catVal='temperature';
+        //return temp.selected;
 
     }
 
-    let catUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24&cat=${catVal}`;//catVal will be the chosen ones from 
-    loadJSON(catUrl, gotWeather);
 
+    function getArrayToSend() {
+        if (windDir.selected) {
+            return wind_dir;
+        }
+        else if (windSpeed.selected) {
+            return windspeedmph;
+        }
+    
+        else if (rain.selected) {
+            return rainin;
+        }
+        else {
+            return temperature;
+    
+        }
+    }
+    
+    let catUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/by-cat?macAddress=A4:CF:12:8A:C8:24&cat=${catVal}`;//catVal will be the chosen ones from 
+    loadJSON(catUrl, (jsonData) => {
+        gotWeather(jsonData, () => {
+            drawCat(getArrayToSend());
+        })
+    });
+    console.log(catUrl);
+    console.log(catVal);
+    console.log("printing the category data");    
 }
 
-// let beginDateVal,endDateVal;
-let dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
-
 function getBeginDate() {
-// draw();
      return beginDate.value;
-
 }
 
 function getEndDate() {
-    //  dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
-    // loadJSON(dateUrl, gotWeather);
-    // draw();
-
-    return endDate.value;
-
+    console.log("got date");
+    let dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/date?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
+    loadJSON(dateUrl, (jsonData) => {
+        gotWeather(jsonData, () => {
+            drawGraphs();
+        })
+    });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// scrolling example from https://taufik-nurrohman.js.org/dte-project/full-page-horizontal-scrolling.html
-//https://jsfiddle.net/64p5r459/2/
-//scrolling not working 
-function scrollHorizontally(e) {
-    e = window.event || e;
-    const deltaX = Math.max(-1, Math.min(1, e.deltaX));
-    const deltaY = Math.max(-1, Math.min(1, e.deltaY));
-    // var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-
-    const delta = (deltaX + deltaY) / 2;
-    document.documentElement.scrollLeft += (delta * 30); // Multiplied by 40
-    e.preventDefault();
-}
-if (sketch.addEventListener) {
-    // IE9, Chrome, Safari, Opera
-    sketch.addEventListener('wheel', scrollHorizontally, false);
-    // Firefox
-    sketch.addEventListener('DOMMouseScroll', scrollHorizontally, false);
-} else {
-    // IE 6/7/8
-    sketch.attachEvent('onmousewheel', scrollHorizontally);
+function getId(){
+    let idUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/id/${idUser.value}`;
+    console.log(idUrl.value)
+    if(idUser.value!=null){
+        console.log("trying anyways")
+        loadJSON(idUrl, (jsonData) => {
+            gotWeather(jsonData, () => {
+                drawId();
+            })
+        });
+    }
 }
 
+function getAllData(){
+    console.log("alldata");
+    let allUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24`;
+
+    loadJSON(allUrl, (jsonData) => {
+        gotWeather(jsonData, () => {
+            drawGraphs();
+        })
+    });
+
+    
+    
+}
 
 //p5 sketch 
 function setup() {
@@ -216,6 +222,8 @@ function setup() {
     // To avoid 429, Too Many Requests Error 
     // Replace cors everywhere with proxy forked by Yiting through this repo: https://github.com/Rob--W/cors-anywhere
 
+    background(230, 251, 255);
+    //drawGraphs();
 }
 
 
@@ -223,22 +231,31 @@ function preload() {
     let url = 'https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24';
 
     // load the json file
-    loadJSON(url, gotWeather);
-
+    //loadJSON(url, gotWeather);
 }
 
-function draw() {
-    background(230, 251, 255);
-    drawGraphs();
-    // getItems();
+//for all and by date
+function gotWeather(weatherData, callback = () => {}) {
 
-    // loadJSON(dateUrl, gotWeather);
+    console.log("data length: " + weatherData.length)
+    console.log(weatherData);
 
-}
+    recorded_at = []; // the timezone is GMT
+    wind_dir = [];
+    winddir_avg2m = [];
+    windspeedmph = [];
+    rainin = [];
+    dailyrainin = [];
+    temperature = [];
+    humidity = [];
+    pressure = [];
+    illuminance = [];
+    uva = [];
+    uvb = [];
+    uvindex = [];
 
-function gotWeather(weatherData) {
     // add each weather data to the arrays
-    for (i = starting_id; i < weatherData.length; i++) {
+    for (i = 0; i < weatherData.length; i++) {
         recorded_at.push(weatherData[i].recorded_at);
         wind_dir.push(weatherData[i].wind_dir);
         winddir_avg2m.push(weatherData[i].winddir_avg2m);
@@ -253,31 +270,46 @@ function gotWeather(weatherData) {
         uvb.push(weatherData[i].uvb);
         uvindex.push(weatherData[i].uvindex);
     }
+    console.log("finished pushing all the data");
+    callback();
+}
 
-    // pring out the arrays loaded with weather data
-    // console.log(recorded_at);
-    // console.log(wind_dir);
-    // console.log(winddir_avg2m);
-    // console.log(windspeedmph);
-    // console.log(rainin);
-    // console.log(dailyrainin);
-    // console.log(temperature);
-    // console.log(windspeedmph);
-    // console.log(humidity);
-    // console.log(pressure);
-    // console.log(illuminance);
-    // console.log(uva);
-    // console.log(uvb);
+function drawId(){
+    background(230, 251, 255);
+    let vSpacing = 20
+    textSize(30);
+    console.log(recorded_at);
+    for (i=0; i< 12; i++){
+        text(recorded_at[0], 10, i*vSpacing);
+        text(wind_dir[0], 10, i*vSpacing);
+        text(winddir_avg2m[0], 10, i*vSpacing);
+        text(rainin[0], 10, i*vSpacing);
+        text(dailyrainin[0], 10, i*vSpacing);
+        text(temperature[0], 10, i*vSpacing);
+    }
+    console.log("finished drawing by id");
+}
+
+
+
+function drawCat(category){
+    background(230, 251, 255);
+    console.log(category);
+    for (i = 1; i < category.length; i++) {
+        let mapped = map(category[i], 0, 0.8, canvasHeight / 9, canvasHeight / 9.25);
+        ellipse(130 + i, mapped, 0.5, 0.5);
+    }
+    console.log("finished drawing by category");
 }
 
 function drawGraphs() {
-
+    background(230, 251, 255);
     // draw linear graphs for each data to see the trend
     // the mapping is done based on the average range of each weather data
     text("Weather data from " + recorded_at[0] + "(GMT) and onwards", 30, canvasHeight / 9 * 0.35);
     text("Data collected with a DIY weather station in East Village, NY", 30, canvasHeight / 9 * 0.55);
-
     text("rainin", 30, canvasHeight / 9);
+
     for (i = 0; i < recorded_at.length; i++) {
         let mapped = map(rainin[i], 0, 0.8, canvasHeight / 9, canvasHeight / 9.25);
         ellipse(130 + i, mapped, 0.5, 0.5);
@@ -317,4 +349,43 @@ function drawGraphs() {
         let mapped = map(humidity[i], 0, 100, canvasHeight / 9 * 8, canvasHeight / 9 * 8.25);
         ellipse(130 + i, mapped, 0.5, 0.5);
     }
+
+    console.log("finished drawing");
 }
+// scrolling example from https://taufik-nurrohman.js.org/dte-project/full-page-horizontal-scrolling.html
+//https://jsfiddle.net/64p5r459/2/
+//scrolling not working 
+function scrollHorizontally(e) {
+    e = window.event || e;
+    const deltaX = Math.max(-1, Math.min(1, e.deltaX));
+    const deltaY = Math.max(-1, Math.min(1, e.deltaY));
+    // var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+
+    const delta = (deltaX + deltaY) / 2;
+    document.documentElement.scrollLeft += (delta * 30); // Multiplied by 40
+    e.preventDefault();
+}
+if (sketch.addEventListener) {
+    // IE9, Chrome, Safari, Opera
+    sketch.addEventListener('wheel', scrollHorizontally, false);
+    // Firefox
+    sketch.addEventListener('DOMMouseScroll', scrollHorizontally, false);
+} else {
+    // IE 6/7/8
+    sketch.attachEvent('onmousewheel', scrollHorizontally);
+}
+
+
+// function draw() {
+//     background(230, 251, 255);
+//     //drawGraphs();
+//     // getItems();
+
+//     // loadJSON(dateUrl, gotWeather);
+
+// }
+
+
+//bugs:
+//need to change date values or it won't send the request. cannot submit the same  date value
+//n
