@@ -26,6 +26,9 @@ let myCanvas;
 let canvasWid = 5000;
 let canvasHeight = 0.5 * window.innerHeight;
 
+// work on id 
+// work on ui stuff
+// if selected id, do not show date 
 
 let data = document.getElementById("data");
 let allData = document.getElementById("allData");
@@ -65,34 +68,46 @@ idUser.addEventListener("click", function () {
   //will be changed according to the size of the data 
 })
 
+
+// get the id link 
+// only show one 
 function selectData() {
     console.log("dataclicked")
     if (catData.selected) {
         console.log("catdata selected")
         if (catSelections.style.display = "none") {
             catSelections.style.display = "block";
+            dateUser.style.display = "none";
+            transactionID.style.display = "none";
+
         } else {
             catSelections.style.display = "none";
-        }
-
-   
+        }   
      return catData.selected;
-
     }
     if (idData.selected) {
         console.log("idData selected")
         if (transactionID.style.display = "none") {
             transactionID.style.display = "block";
+            dateUser.style.display = "none";
+            catSelections.style.display = "none";
+
         } else {
-            transactionID.style.display = "none"
+            transactionID.style.display = "none";
         }
+    
+    
         return idData.selected;
     }
 
+ 
     if (dateData.selected) {
         console.log("dateData selected")
         if (dateUser.style.display = "none") {
             dateUser.style.display = "block";
+            transactionID.style.display = "none";
+            catSelections.style.display = "none";
+
         } else {
             dateUser.style.display = "none";
         }
@@ -109,14 +124,19 @@ function selectData() {
     }
 }
 
+let catVal;
+let catUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/by-cat?macAddress=A4:CF:12:8A:C8:24&cat=${catVal}`;//catVal will be the chosen ones from 
+
 function catFun() {
+    loadJSON(catUrl, gotWeather);
+
     console.log("cat selections chosen");
-    let catVal;
+    
     if (windDir.selected) {
         console.log("windDir selected");
         // should return the value 
         catVal='wind_dir';
-              return windDir.selected;
+    return windDir.selected;
 
     }
     if (windSpeed.selected) {
@@ -140,14 +160,13 @@ function catFun() {
         return temp.selected;
 
     }
+    return catVal;
 
-    let catUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24&cat=${catVal}`;//catVal will be the chosen ones from 
-    loadJSON(catUrl, gotWeather);
-
+ 
 }
 
 // let beginDateVal,endDateVal;
-let dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
+let dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/date?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
 
 function getBeginDate() {
 // draw();
@@ -163,20 +182,6 @@ function getEndDate() {
     return endDate.value;
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -218,12 +223,16 @@ function setup() {
 
 }
 
+//create functions for each gotweather data so the format will be different 
 
 function preload() {
     let url = 'https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24';
 
     // load the json file
-    loadJSON(url, gotWeather);
+    // loadJSON(url, gotWeather);
+    //if all is selected, do the json for all 
+    // if cat 
+    loadJSON(url, console.log("loaded"));
 
 }
 
@@ -235,6 +244,7 @@ function draw() {
     // loadJSON(dateUrl, gotWeather);
 
 }
+
 
 function gotWeather(weatherData) {
     // add each weather data to the arrays
