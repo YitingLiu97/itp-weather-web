@@ -179,7 +179,8 @@ function catFun() {
     let catUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/by-cat?macAddress=A4:CF:12:8A:C8:24&cat=${catVal}`; //catVal will be the chosen ones from 
     loadJSON(catUrl, (jsonData) => {
         gotWeather(jsonData, () => {
-            drawCat(getArrayToSend());
+            drawGraphs();
+            // drawCat(getArrayToSend());
         })
     });
     console.log(catUrl);
@@ -417,13 +418,11 @@ function drawCat(category) {
         let mapped = map(category[i], 0, 0.8, canvasHeight / 9, canvasHeight / 9.25);
         ellipse(130 + i, mapped, 0.5, 0.5);
     }
-    console.log("finished drawing by category");
 }
 
 
 function drawGraphs() {
     background(250);
-
     colorMode(HSB);
     // draw linear graphs for each data to see the trend
     // the mapping is done based on the average range of each weather data
