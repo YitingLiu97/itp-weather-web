@@ -85,11 +85,6 @@ allData.addEventListener("change", getAllData);
 
 idUser.addEventListener("input", getId);
 
-//idUser.value="";
-//idUser.min = "1";
-//idUser.max = "2000";
-//will be changed according to the size of the data 
-//)
 
 function selectData() {
     console.log("dataclicked")

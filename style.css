@@ -126,6 +126,12 @@ input:focus {
 }
 
 #bottomDiv{
+display: flex;
+flex-flow: row;
+left: 0;
+right: 0;
   justify-content: space-between;
+  /* bottom: 100px; */
+ /* position: absolute; */
 }
 
