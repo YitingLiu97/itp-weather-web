@@ -12,6 +12,7 @@ body {
   padding: 0;
   position: relative;
   font-size: large;
+  height: 100vh;
 }
 
 body>div {
@@ -47,6 +48,7 @@ canvas {
 #sketch {
   overflow-x: scroll;
   white-space: nowrap;
+  height: 70vh;
 }
 
 footer {
@@ -142,6 +144,7 @@ input:focus {
   left: 0;
   right: 0;
   justify-content: space-between;
+  padding-bottom:10vh ;
   /* bottom: 100px; */
   /* position: absolute; */
 }
@@ -151,7 +154,7 @@ input:focus {
 }
 
 ::-webkit-scrollbar-track {
-border: 1.2pt #d8bcbc double;
+  border: 1.2pt #d8bcbc double;
   border-radius: 20px;
 }
 
