@@ -115,9 +115,6 @@ function selectData() {
         } else {
             transactionID.style.display = "none";
         }
-
-
-        // return idData.selected;
     }
 
 
@@ -132,19 +129,13 @@ function selectData() {
         } else {
             dateUser.style.display = "none";
         }
-
-
-        // return dateData.selected;
     }
     if (allData.selected) {
         //also reset 
-     
         dateUser.style.display = "none";
         transactionID.style.display = "none";
         catSelections.style.display = "none";
-        getAllData();
-        // return allData.selected;
-    }
+        getAllData();    }
 }
 let catVal;
 // if category is chosen
@@ -152,30 +143,20 @@ function catFun() {
     console.log("cat selections chosen");
 
     catVal = "";
-    // let arrayToSend = [];
-
     if (windDir.selected) {
 
         console.log("windDir selected");
-        // should return the value 
         catVal = 'wind_dir';
-        //return windDir.selected;
 
     } else if (windSpeed.selected) {
         console.log("windSpeed selected");
         catVal = 'windspeedmph';
-        //return windSpeed.selected;
     } else if (rain.selected) {
         console.log("rain selected");
         catVal = 'rainin';
-
-        //return rain.selected;
-
     } else {
         console.log("temp selected");
         catVal = 'temperature';
-        //return temp.selected;
-
     }
 
     let catUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/by-cat?macAddress=A4:CF:12:8A:C8:24&cat=${catVal}`; //catVal will be the chosen ones from 
