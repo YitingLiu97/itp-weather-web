@@ -52,29 +52,29 @@ reset.addEventListener("click", function () {
     dateUser.style.display = "none";
     transactionID.style.display = "none";
     catSelections.style.display = "none";
-     recorded_atSingle = 0; // the timezone is GMT
-     wind_dirSingle = 0;
-     windspeedmphSingle = 0;
-     raininSingle = 0;
-     temperatureSingle = 0;
-     humiditySingle = 0;
-     illuminanceSingle = 0;
-     uvindexSingle = 0;
-     recorded_at = []; // the timezone is GMT
-     wind_dir = [];
-     winddir_avg2m = [];
-     windspeedmph = [];
-     rainin = [];
-     dailyrainin = [];
-     temperature = [];
-     humidity = [];
-     pressure = [];
-     illuminance = [];
-     uva = [];
-     uvb = [];
-     uvindex = [];
-     drawGraphs();
-     
+    recorded_atSingle = 0; // the timezone is GMT
+    wind_dirSingle = 0;
+    windspeedmphSingle = 0;
+    raininSingle = 0;
+    temperatureSingle = 0;
+    humiditySingle = 0;
+    illuminanceSingle = 0;
+    uvindexSingle = 0;
+    recorded_at = []; // the timezone is GMT
+    wind_dir = [];
+    winddir_avg2m = [];
+    windspeedmph = [];
+    rainin = [];
+    dailyrainin = [];
+    temperature = [];
+    humidity = [];
+    pressure = [];
+    illuminance = [];
+    uva = [];
+    uvb = [];
+    uvindex = [];
+    drawGraphs();
+
 })
 
 data.addEventListener("change", selectData);
@@ -107,6 +107,7 @@ function selectData() {
     }
     if (idData.selected) {
         console.log("idData selected")
+        getId();
         if (transactionID.style.display = "none") {
             transactionID.style.display = "block";
             dateUser.style.display = "none";
@@ -122,7 +123,8 @@ function selectData() {
 
 
     if (dateData.selected) {
-        console.log("dateData selected")
+        console.log("dateData selected");
+        getDateVal();
         if (dateUser.style.display = "none") {
             dateUser.style.display = "block";
             transactionID.style.display = "none";
@@ -200,24 +202,21 @@ function getArrayToSend() {
 }
 let dateUrl;
 
-function getBeginDate() {
+function getDateVal(){
     dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/date?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
     loadJSON(dateUrl, (jsonData) => {
         gotWeather(jsonData, () => {
             drawGraphs();
         })
     });
+}
+function getBeginDate() {
+    getDateVal();
     return beginDate.value;
 }
 
 function getEndDate() {
-    console.log("got date");
-    dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/date?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
-    loadJSON(dateUrl, (jsonData) => {
-        gotWeather(jsonData, () => {
-            drawGraphs();
-        })
-    });
+    getDateVal();
     return endDate.value;
 
 }
@@ -232,14 +231,14 @@ function getId() {
         })
     });
 
-     recorded_atSingle = 0; // the timezone is GMT
-     wind_dirSingle = 0;
-     windspeedmphSingle = 0;
-     raininSingle = 0;
-     temperatureSingle = 0;
-     humiditySingle = 0;
-     illuminanceSingle = 0;
-     uvindexSingle = 0;
+    recorded_atSingle = 0; // the timezone is GMT
+    wind_dirSingle = 0;
+    windspeedmphSingle = 0;
+    raininSingle = 0;
+    temperatureSingle = 0;
+    humiditySingle = 0;
+    illuminanceSingle = 0;
+    uvindexSingle = 0;
 
 
 }
@@ -320,95 +319,95 @@ function gotWeather(weatherData, callback = () => {}) {
     callback();
 }
 
-let ID=30; 
+let ID = 30;
 
-function drawIds() { 
+function drawIds() {
     background(250);
 
     colorMode(HSB);
     // draw linear graphs for each data to see the trend
     // the mapping is done based on the average range of each weather data
     noStroke();
-    fill(0,0,46);
+    fill(0, 0, 46);
     textSize(32);
-    text("WEATHER DATA",30,50);
-    
-    
+    text("WEATHER DATA", 30, 50);
+
+
     textSize(14);
-    text("from " + recorded_atSingle + " ID : " + idUser.value,30,75);
+    text("from " + recorded_atSingle + " ID : " + idUser.value, 30, 75);
     textSize(10);
     text("Data collected with a DIY weather station in East Village, NY  by ITP Weather Band", 30, 95);
     text("", 30, 100);
-    
-    fill(258,18,91);
+
+    fill(258, 18, 91);
     textSize(14);
     text("rain", 30, 150);
     text(raininSingle, 30, 170);
-      let mappedR = map(raininSingle, 0, 1, 0, 50);
-      ellipse(200,150,mappedR,mappedR); 
-      console.log("raininsinglei n drawids",raininSingle)
-    
-    fill(183,29,89);
+    let mappedR = map(raininSingle, 0, 1, 0, 50);
+    ellipse(200, 150, mappedR, mappedR);
+    console.log("raininsinglei n drawids", raininSingle)
+
+    fill(183, 29, 89);
     text("wind direction", 30, 250);
     text(wind_dirSingle, 30, 270);
-      let mappedWD = map(wind_dirSingle, 0, 315, 0, 50);
-      ellipse(200,250,mappedWD,mappedWD);   
-    
-    fill(156,25,93);
+    let mappedWD = map(wind_dirSingle, 0, 315, 0, 50);
+    ellipse(200, 250, mappedWD, mappedWD);
+
+    fill(156, 25, 93);
     text("wind speed", 30, 350);
     text(windspeedmphSingle, 30, 370);
-      let mappedWS = map(windspeedmphSingle, 0, 5, 0, 50);
-      ellipse(200,350,mappedWS,mappedWS);   
-    
-    fill(93,28,94);
+    let mappedWS = map(windspeedmphSingle, 0, 5, 0, 50);
+    ellipse(200, 350, mappedWS, mappedWS);
+
+    fill(93, 28, 94);
     text("temperature", 30, 450);
     text(temperatureSingle, 30, 470);
-      let mappedT = map(temperatureSingle, 0, 20, 0, 50);
-      ellipse(200,450,mappedT,mappedT);   
-      
-    fill(52,65,94);
+    let mappedT = map(temperatureSingle, 0, 20, 0, 50);
+    ellipse(200, 450, mappedT, mappedT);
+
+    fill(52, 65, 94);
     text("illuminance", 30, 550);
     text(illuminanceSingle, 30, 570);
-      let mappedI = map(illuminanceSingle, 0, 2500, 0, 50);
-      ellipse(200,550,mappedI,mappedI);
-      
-    fill(25,48,98);
+    let mappedI = map(illuminanceSingle, 0, 2500, 0, 50);
+    ellipse(200, 550, mappedI, mappedI);
+
+    fill(25, 48, 98);
     text("uvindex", 30, 650);
     text(uvindexSingle, 30, 670);
-      let mappedU = map(uvindexSingle, 0, 1, 0, 50);
-      ellipse(200,650,mappedU,mappedU);
-    
-    fill(0,25,99);
+    let mappedU = map(uvindexSingle, 0, 1, 0, 50);
+    ellipse(200, 650, mappedU, mappedU);
+
+    fill(0, 25, 99);
     text("humidity", 30, 750);
     text(humiditySingle, 30, 770);
-      let mappedH = map(humiditySingle, 50, 150, 0, 50);
-     ellipse(200,750,mappedH,mappedH); 
-  }
-  let recorded_atSingle = 0; // the timezone is GMT
-  let wind_dirSingle = 0;
-  let windspeedmphSingle = 0;
-  let raininSingle = 0;
-  let temperatureSingle = 0;
-  let humiditySingle = 0;
-  let illuminanceSingle = 0;
-  let uvindexSingle = 0;
+    let mappedH = map(humiditySingle, 50, 150, 0, 50);
+    ellipse(200, 750, mappedH, mappedH);
+}
+let recorded_atSingle = 0; // the timezone is GMT
+let wind_dirSingle = 0;
+let windspeedmphSingle = 0;
+let raininSingle = 0;
+let temperatureSingle = 0;
+let humiditySingle = 0;
+let illuminanceSingle = 0;
+let uvindexSingle = 0;
 
-  function gotWeatherID(weatherData, callback = () => {}){
-      console.log(weatherData);
+function gotWeatherID(weatherData, callback = () => {}) {
+    console.log(weatherData);
 
-      recorded_atSingle = weatherData.recorded_at; // the timezone is GMT
-      wind_dirSingle = weatherData.wind_dir;
-      windspeedmphSingle = weatherData.windspeedmph;
-      raininSingle = weatherData.rainin;
-      temperatureSingle = weatherData.temperature;
-      humiditySingle = weatherData.humidity;
-      illuminanceSingle = weatherData.illuminance;
-      uvindexSingle = weatherData.uvindex;
-  
-      console.log("recirded at single",recorded_atSingle);
-      callback();
-  
-    }
+    recorded_atSingle = weatherData.recorded_at; // the timezone is GMT
+    wind_dirSingle = weatherData.wind_dir;
+    windspeedmphSingle = weatherData.windspeedmph;
+    raininSingle = weatherData.rainin;
+    temperatureSingle = weatherData.temperature;
+    humiditySingle = weatherData.humidity;
+    illuminanceSingle = weatherData.illuminance;
+    uvindexSingle = weatherData.uvindex;
+
+    console.log("recirded at single", recorded_atSingle);
+    callback();
+
+}
 //print out the cat text 
 function drawCat(category) {
     background(230, 251, 255);
@@ -422,129 +421,129 @@ function drawCat(category) {
 }
 
 
-function drawGraphs() { 
+function drawGraphs() {
     background(250);
 
     colorMode(HSB);
     // draw linear graphs for each data to see the trend
     // the mapping is done based on the average range of each weather data
     noStroke();
-    fill(0,0,46);
+    fill(0, 0, 46);
     textSize(32);
-    text("WEATHER DATA",30,50);
+    text("WEATHER DATA", 30, 50);
     textSize(14);
-    text("from " + beginDate.value + " to "+ endDate.value, 30, 75);
+    text("from " + beginDate.value + " to " + endDate.value, 30, 75);
     textSize(10);
     text("Data collected with a DIY weather station in East Village, NY  by ITP Weather Band", 30, 95);
     text("", 30, 100);
-    
+
     noStroke();
-    let pos = mouseX-130
-    fill(258,18,91);
+    let pos = mouseX - 130
+    fill(258, 18, 91);
     textSize(14);
     text("rain", 30, 150);
     for (i = 0; i < recorded_at.length; i++) {
-      let mapped = map(rainin[i], 0, 1, 150, 100);
-      stroke(258,18,91);
-      line(130+i,150,130+i,mapped); 
-      
-      let col = color(258,18,91);
-      showText(rainin[pos],"rain = ",col,100,150);
+        let mapped = map(rainin[i], 0, 1, 150, 100);
+        stroke(258, 18, 91);
+        line(130 + i, 150, 130 + i, mapped);
+
+        let col = color(258, 18, 91);
+        showText(rainin[pos], "rain = ", col, 100, 150);
     }
-    
+
     noStroke();
-    fill(183,29,89);
+    fill(183, 29, 89);
     textSize(14);
     text("wind direction", 30, 250);
-  
+
     for (i = 0; i < recorded_at.length; i++) {
-      let mapped = map(wind_dir[i], 0, 315, 250, 200);
-      let b = map(wind_dir[i], 0, 315,0,100);
-      stroke(183,29,89);
-      line(130+i,250,130+i,mapped);   
-      
-      let col = color(183,29,89);
-      showText(wind_dir[pos],"wind dir = ",col,200,250);
+        let mapped = map(wind_dir[i], 0, 315, 250, 200);
+        let b = map(wind_dir[i], 0, 315, 0, 100);
+        stroke(183, 29, 89);
+        line(130 + i, 250, 130 + i, mapped);
+
+        let col = color(183, 29, 89);
+        showText(wind_dir[pos], "wind dir = ", col, 200, 250);
     }
-    
+
     noStroke();
-    fill(156,25,93);
+    fill(156, 25, 93);
     textSize(14);
     text("wind speed", 30, 350);
     // beginShape();
     for (i = 0; i < recorded_at.length; i++) {
-      let mapped = map(windspeedmph[i], 0, 5, 350, 300);
-      stroke(156,25,93);
-      line(130+i,350,130+i,mapped);   
-      
-      let col = color(156,25,93);
-      showText(windspeedmph[pos],"wind speed = ",col,300,350);
+        let mapped = map(windspeedmph[i], 0, 5, 350, 300);
+        stroke(156, 25, 93);
+        line(130 + i, 350, 130 + i, mapped);
+
+        let col = color(156, 25, 93);
+        showText(windspeedmph[pos], "wind speed = ", col, 300, 350);
     }
-    
+
     noStroke();
-    fill(93,28,94);
-     textSize(14);
+    fill(93, 28, 94);
+    textSize(14);
     text("temperature", 30, 450);
     for (i = 0; i < recorded_at.length; i++) {
-      let mapped = map(temperature[i], 0, 20, 450, 400);
-      stroke(93,28,94);
-      line(130+i,450,130+i,mapped);   
-      
-      let col = color(93,28,94);
-      showText(temperature[pos],"tempreature = ",col,400,450);
+        let mapped = map(temperature[i], 0, 20, 450, 400);
+        stroke(93, 28, 94);
+        line(130 + i, 450, 130 + i, mapped);
+
+        let col = color(93, 28, 94);
+        showText(temperature[pos], "tempreature = ", col, 400, 450);
     }
     noStroke();
-    fill(52,65,94);
-     textSize(14);
+    fill(52, 65, 94);
+    textSize(14);
     text("illuminance", 30, 550);
     for (i = 0; i < recorded_at.length; i++) {
-      let mapped = map(illuminance[i], 0, 2500, 550, 500);
-      stroke(52,47,99);
-      line(130+i,550,130+i,mapped);
-      
-      let col = color(52,65,94);
-      showText(illuminance[pos],"illuminance = ",col,500,550);
+        let mapped = map(illuminance[i], 0, 2500, 550, 500);
+        stroke(52, 47, 99);
+        line(130 + i, 550, 130 + i, mapped);
+
+        let col = color(52, 65, 94);
+        showText(illuminance[pos], "illuminance = ", col, 500, 550);
     }
     noStroke();
-    fill(25,48,98);
-     textSize(14);
+    fill(25, 48, 98);
+    textSize(14);
     text("uv index", 30, 650);
     for (i = 0; i < recorded_at.length; i++) {
-      let mapped = map(uvindex[i], 0, 1, 650, 600);
-      stroke(25,48,98);
-      line(130+i,650,130+i,mapped);
-      
-       let col = color(25,48,98);
-      showText(uvindex[pos],"uv = ",col,600,650);
+        let mapped = map(uvindex[i], 0, 1, 650, 600);
+        stroke(25, 48, 98);
+        line(130 + i, 650, 130 + i, mapped);
+
+        let col = color(25, 48, 98);
+        showText(uvindex[pos], "uv = ", col, 600, 650);
     }
-    
+
     noStroke();
-    fill(0,25,99);
-     textSize(14);
+    fill(0, 25, 99);
+    textSize(14);
     text("humidity", 30, 750);
     for (i = 0; i < recorded_at.length; i++) {
-      let mapped = map(humidity[i], 50, 150, 750, 700);
-     stroke(0,25,99);
-     line(130+i,750,130+i,mapped); 
-  
-      let col = color(0,25,99);
-      showText(humidity[pos],"humidity = ",col,700,750);
+        let mapped = map(humidity[i], 50, 150, 750, 700);
+        stroke(0, 25, 99);
+        line(130 + i, 750, 130 + i, mapped);
+
+        let col = color(0, 25, 99);
+        showText(humidity[pos], "humidity = ", col, 700, 750);
     }
-  }
-  
-  function showText(data,word,col,hMin,hMax){
+}
+
+function showText(data, word, col, hMin, hMax) {
     textSize(10);
-    if(mouseX >=130&mouseX<=130+recorded_at.length& mouseY>=hMin &mouseY <=hMax){
-      let txt = word +data;
-      let txtW = textWidth(txt);
-      noStroke();
-      fill(255);
-      rect(mouseX-5,mouseY-12,txtW+10,16);
-      fill(col);
-      text(txt,mouseX,mouseY);    
-       } 
-  }
-    
+    if (mouseX >= 130 & mouseX <= 130 + recorded_at.length & mouseY >= hMin & mouseY <= hMax) {
+        let txt = word + data;
+        let txtW = textWidth(txt);
+        noStroke();
+        fill(255);
+        rect(mouseX - 5, mouseY - 12, txtW + 10, 16);
+        fill(col);
+        text(txt, mouseX, mouseY);
+    }
+}
+
 // scrolling example from https://taufik-nurrohman.js.org/dte-project/full-page-horizontal-scrolling.html
 //https://jsfiddle.net/64p5r459/2/
 //scrolling not working 
