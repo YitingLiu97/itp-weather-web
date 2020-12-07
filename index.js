@@ -20,6 +20,8 @@ let uva = [];
 let uvb = [];
 let uvindex = [];
 
+let jsonlink=document.getElementById("jsonlink");
+
 //let allData = [];
 // set which data you want to start from with its session id
 let starting_id = 30;
@@ -74,6 +76,8 @@ reset.addEventListener("click", function () {
     uvb = [];
     uvindex = [];
     drawGraphs();
+    jsonlink.href="";
+    jsonlink.innerHTML="Find your JSON here.";
 
 })
 
@@ -134,6 +138,7 @@ function selectData() {
     }
     if (allData.selected) {
         //also reset 
+     
         dateUser.style.display = "none";
         transactionID.style.display = "none";
         catSelections.style.display = "none";
@@ -145,10 +150,12 @@ let catVal;
 // if category is chosen
 function catFun() {
     console.log("cat selections chosen");
+
     catVal = "";
     // let arrayToSend = [];
 
     if (windDir.selected) {
+
         console.log("windDir selected");
         // should return the value 
         catVal = 'wind_dir';
@@ -180,6 +187,8 @@ function catFun() {
     });
     console.log(catUrl);
     console.log(catVal);
+    jsonlink.href=`http://weatherband.itp.io:3000/data/by-cat?macAddress=A4:CF:12:8A:C8:24&cat=${catVal}`;
+    jsonlink.innerHTML=`JSON Date for category ${catVal}` ;
     console.log("printing the category data");
 }
 
@@ -200,6 +209,10 @@ let dateUrl;
 
 function getDateVal(){
     dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/date?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
+    jsonlink.href=`http://weatherband.itp.io:3000/data/date?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
+    jsonlink.innerHTML=`JSON Date from ${beginDate.value} to ${endDate.value}`;
+
+
     loadJSON(dateUrl, (jsonData) => {
         gotWeather(jsonData, () => {
             drawGraphs();
@@ -220,7 +233,10 @@ let idUrl;
 
 function getId() {
     idUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/id/${idUser.value}`;
+    jsonlink.href=`http://weatherband.itp.io:3000/data/id/${idUser.value}`;
+    jsonlink.innerHTML=`JSON Date for ID ${idUser.value}` 
 
+    console.log("jsonlink",  jsonlink.src);
     loadJSON(idUrl, (jsonData) => {
         gotWeatherID(jsonData, () => {
             drawIds();
@@ -238,10 +254,10 @@ function getId() {
 
 
 }
-
+let allUrl;
 function getAllData() {
     console.log("alldata");
-    let allUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24`;
+    allUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24`;
 
     loadJSON(allUrl, (jsonData) => {
         gotWeather(jsonData, () => {
@@ -263,8 +279,6 @@ function setup() {
     // To avoid 429, Too Many Requests Error 
     // Replace cors everywhere with proxy forked by Yiting through this repo: https://github.com/Rob--W/cors-anywhere
 
-    background(230, 251, 255);
-    //drawGraphs();
 }
 
 let url = 'https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24';
@@ -431,8 +445,9 @@ function drawGraphs() {
     text("Data collected with a DIY weather station in East Village, NY  by ITP Weather Band", 30, 95);
     text("", 30, 100);
 
+    pos=mouseX-130;
     noStroke();
-    let pos = mouseX - 130
+    // console.log("mouseX",mouseX);
     fill(258, 18, 91);
     textSize(14);
     text("rain", 30, 150);
@@ -441,8 +456,10 @@ function drawGraphs() {
         stroke(258, 18, 91);
         line(130 + i, 150, 130 + i, mapped);
 
-        let col = color(258, 18, 91);
-        showText(rainin[pos], "rain = ", col, 100, 150);
+        // let col = color(258, 18, 91);
+        // showText(rainin[pos], "rain = ", col, 100, 150);
+       
+
     }
 
     noStroke();
@@ -456,8 +473,8 @@ function drawGraphs() {
         stroke(183, 29, 89);
         line(130 + i, 250, 130 + i, mapped);
 
-        let col = color(183, 29, 89);
-        showText(wind_dir[pos], "wind dir = ", col, 200, 250);
+        // let col = color(183, 29, 89);
+        // showText(wind_dir[pos], "wind dir = ", col, 200, 250);
     }
 
     noStroke();
@@ -470,8 +487,8 @@ function drawGraphs() {
         stroke(156, 25, 93);
         line(130 + i, 350, 130 + i, mapped);
 
-        let col = color(156, 25, 93);
-        showText(windspeedmph[pos], "wind speed = ", col, 300, 350);
+        // let col = color(156, 25, 93);
+        // showText(windspeedmph[pos], "wind speed = ", col, 300, 350);
     }
 
     noStroke();
@@ -483,8 +500,8 @@ function drawGraphs() {
         stroke(93, 28, 94);
         line(130 + i, 450, 130 + i, mapped);
 
-        let col = color(93, 28, 94);
-        showText(temperature[pos], "tempreature = ", col, 400, 450);
+        // let col = color(93, 28, 94);
+        // showText(temperature[pos], "tempreature = ", col, 400, 450);
     }
     noStroke();
     fill(52, 65, 94);
@@ -495,8 +512,8 @@ function drawGraphs() {
         stroke(52, 47, 99);
         line(130 + i, 550, 130 + i, mapped);
 
-        let col = color(52, 65, 94);
-        showText(illuminance[pos], "illuminance = ", col, 500, 550);
+        // let col = color(52, 65, 94);
+        // showText(illuminance[pos], "illuminance = ", col, 500, 550);
     }
     noStroke();
     fill(25, 48, 98);
@@ -507,8 +524,8 @@ function drawGraphs() {
         stroke(25, 48, 98);
         line(130 + i, 650, 130 + i, mapped);
 
-        let col = color(25, 48, 98);
-        showText(uvindex[pos], "uv = ", col, 600, 650);
+        // let col = color(25, 48, 98);
+        // showText(uvindex[pos], "uv = ", col, 600, 650);
     }
 
     noStroke();
@@ -520,15 +537,16 @@ function drawGraphs() {
         stroke(0, 25, 99);
         line(130 + i, 750, 130 + i, mapped);
 
-        let col = color(0, 25, 99);
-        showText(humidity[pos], "humidity = ", col, 700, 750);
+        // let col = color(0, 25, 99);
+        // showText(humidity[pos], "humidity = ", col, 700, 750);
     }
 }
-
+/*** 
 function showText(data, word, col, hMin, hMax) {
     textSize(10);
     if (mouseX >= 130 & mouseX <= 130 + recorded_at.length & mouseY >= hMin & mouseY <= hMax) {
         let txt = word + data;
+        
         let txtW = textWidth(txt);
         noStroke();
         fill(255);
@@ -537,6 +555,32 @@ function showText(data, word, col, hMin, hMax) {
         text(txt, mouseX, mouseY);
     }
 }
+*/
+
+// let pos,xPos,yPos;
+// sketch.addEventListener("mousemove", function (e) {
+//     xPos = e.clientX;
+//     yPos = e.clientY;
+//     pos = xPos - 130;
+
+    
+//     noStroke();
+//     fill(93, 28, 94);
+//     textSize(14);
+//     text("temperature", 30, 450);
+//     for (i = 0; i < recorded_at.length; i++) {
+//         let mapped = map(temperature[i], 0, 20, 450, 400);
+//         stroke(93, 28, 94);
+//         line(130 + i, 450, 130 + i, mapped);
+
+//         let col = color(93, 28, 94);
+//         showText(temperature[pos], "tempreature = ", col, 400, 450);
+//     }
+//     console.log(temperature[pos],"pos for temp")
+
+//     document.getElementById("display").innerHTML=temperature[pos];
+//     console.log("mouseover", xPos);
+// })
 
 // scrolling example from https://taufik-nurrohman.js.org/dte-project/full-page-horizontal-scrolling.html
 //https://jsfiddle.net/64p5r459/2/

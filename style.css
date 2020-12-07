@@ -13,7 +13,8 @@ body {
   position: relative;
   font-size: large;
 }
-body>div{
+
+body>div {
   padding: 20px;
 }
 
@@ -25,7 +26,8 @@ div {
   align-content: center;
 
 }
-label{
+
+label {
   padding: 0 20px;
   /* text-align: left; */
 
@@ -33,19 +35,20 @@ label{
 
 
 canvas {
-  position:relative;
-  top:0;
-  left:0;
-  width:auto;
-  height:100%;
-  z-index:-1;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: 100%;
+  z-index: -1;
 
 }
 
-#sketch{
-  overflow-x:scroll;
+#sketch {
+  overflow-x: scroll;
   white-space: nowrap;
 }
+
 footer {
   position: fixed;
   bottom: 0;
@@ -56,14 +59,16 @@ footer {
   background-color: #c29595;
   height: 5vh;
   margin: auto;
-  
+
 }
 
 
 
 
 /* button generator: https://www.bestcssbuttongenerator.com/#/10 */
-button,select,option {
+button,
+select,
+option {
   background: linear-gradient(to bottom, #d0c2ea 5%, #d8bcbc 100%);
   background-color: #d8bcbc;
   border-radius: 13px;
@@ -78,20 +83,24 @@ button,select,option {
   border-style: none;
 }
 
-button:hover,select:hover,option:hover {
+button:hover,
+select:hover,
+option:hover {
   background: linear-gradient(to bottom, #d0c2ea 20%, #d8bcbc 100%);
   background-color: #c29595;
   color: black;
 }
 
-button:active,select:active,option:active {
+button:active,
+select:active,
+option:active {
   position: relative;
   top: 1px;
 }
 
-a{
+a {
   color: #c29595;
- font-weight: thin;
+  font-weight: thin;
 
 }
 
@@ -115,23 +124,38 @@ input:focus {
 
 
 /* display toggle */
-#transactionID,#catSelections,#dateUser{
+#transactionID,
+#catSelections,
+#dateUser {
   display: none;
 }
 
 
-#api{
+#api {
   text-align: right;
   justify-content: flex-end;
 }
 
-#bottomDiv{
-display: flex;
-flex-flow: row;
-left: 0;
-right: 0;
+#bottomDiv {
+  display: flex;
+  flex-flow: row;
+  left: 0;
+  right: 0;
   justify-content: space-between;
   /* bottom: 100px; */
- /* position: absolute; */
+  /* position: absolute; */
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+border: 1.2pt #d8bcbc double;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #d0c2ea 80%, #d8bcbc 20%);
+  border-radius: 20px
+}
