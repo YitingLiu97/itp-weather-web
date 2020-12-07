@@ -19,6 +19,8 @@ let illuminance = [];
 let uva = [];
 let uvb = [];
 let uvindex = [];
+
+//let allData = [];
 // set which data you want to start from with its session id
 let starting_id = 30;
 let myCanvas;
@@ -26,9 +28,6 @@ let myCanvas;
 let canvasWid = 5000;
 let canvasHeight = 0.5 * window.innerHeight;
 
-// work on id 
-// work on ui stuff
-// if selected id, do not show date 
 
 let data = document.getElementById("data");
 let allData = document.getElementById("allData");
@@ -53,24 +52,45 @@ reset.addEventListener("click", function () {
     dateUser.style.display = "none";
     transactionID.style.display = "none";
     catSelections.style.display = "none";
+     recorded_atSingle = 0; // the timezone is GMT
+     wind_dirSingle = 0;
+     windspeedmphSingle = 0;
+     raininSingle = 0;
+     temperatureSingle = 0;
+     humiditySingle = 0;
+     illuminanceSingle = 0;
+     uvindexSingle = 0;
+     recorded_at = []; // the timezone is GMT
+     wind_dir = [];
+     winddir_avg2m = [];
+     windspeedmph = [];
+     rainin = [];
+     dailyrainin = [];
+     temperature = [];
+     humidity = [];
+     pressure = [];
+     illuminance = [];
+     uva = [];
+     uvb = [];
+     uvindex = [];
+     drawGraphs();
+     
 })
 
-data.addEventListener("click", selectData);
-catSelections.addEventListener("click", catFun);
+data.addEventListener("change", selectData);
+catSelections.addEventListener("change", catFun);
 beginDate.addEventListener("change", getBeginDate);
-
 endDate.addEventListener("change", getEndDate);
+allData.addEventListener("change", getAllData);
 
-idUser.addEventListener("click", function () {
-    // idUser.value="";
-    idUser.min = "1";
-    idUser.max = "200";
-  //will be changed according to the size of the data 
-})
+idUser.addEventListener("input", getId);
 
+//idUser.value="";
+//idUser.min = "1";
+//idUser.max = "2000";
+//will be changed according to the size of the data 
+//)
 
-// get the id link 
-// only show one 
 function selectData() {
     console.log("dataclicked")
     if (catData.selected) {
@@ -82,8 +102,8 @@ function selectData() {
 
         } else {
             catSelections.style.display = "none";
-        }   
-     return catData.selected;
+        }
+        //  return catData.selected;
     }
     if (idData.selected) {
         console.log("idData selected")
@@ -95,12 +115,12 @@ function selectData() {
         } else {
             transactionID.style.display = "none";
         }
-    
-    
-        return idData.selected;
+
+
+        // return idData.selected;
     }
 
- 
+
     if (dateData.selected) {
         console.log("dateData selected")
         if (dateUser.style.display = "none") {
@@ -111,82 +131,420 @@ function selectData() {
         } else {
             dateUser.style.display = "none";
         }
-      
-    
-        return dateData.selected;
+
+
+        // return dateData.selected;
     }
     if (allData.selected) {
         //also reset 
         dateUser.style.display = "none";
         transactionID.style.display = "none";
         catSelections.style.display = "none";
-        return allData.selected;
+        getAllData();
+        // return allData.selected;
     }
 }
-
 let catVal;
-let catUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/by-cat?macAddress=A4:CF:12:8A:C8:24&cat=${catVal}`;//catVal will be the chosen ones from 
-
+// if category is chosen
 function catFun() {
-    loadJSON(catUrl, gotWeather);
-
     console.log("cat selections chosen");
-    
+    catVal = "";
+    // let arrayToSend = [];
+
     if (windDir.selected) {
         console.log("windDir selected");
         // should return the value 
-        catVal='wind_dir';
-    return windDir.selected;
+        catVal = 'wind_dir';
+        //return windDir.selected;
 
-    }
-    if (windSpeed.selected) {
+    } else if (windSpeed.selected) {
         console.log("windSpeed selected");
-        catVal='wind_speed';
-
-        return windSpeed.selected;
-    }
-
-    if (rain.selected) {
+        catVal = 'windspeedmph';
+        //return windSpeed.selected;
+    } else if (rain.selected) {
         console.log("rain selected");
-        catVal='rainin';
+        catVal = 'rainin';
 
-        return rain.selected;
+        //return rain.selected;
 
-    }
-    if (temp.selected) {
+    } else {
         console.log("temp selected");
-        catVal='temp';
-
-        return temp.selected;
+        catVal = 'temperature';
+        //return temp.selected;
 
     }
-    return catVal;
 
- 
+    let catUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/by-cat?macAddress=A4:CF:12:8A:C8:24&cat=${catVal}`; //catVal will be the chosen ones from 
+    loadJSON(catUrl, (jsonData) => {
+        gotWeather(jsonData, () => {
+            drawCat(getArrayToSend());
+        })
+    });
+    console.log(catUrl);
+    console.log(catVal);
+    console.log("printing the category data");
 }
 
-// let beginDateVal,endDateVal;
-let dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/date?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
+
+function getArrayToSend() {
+    if (windDir.selected) {
+        return wind_dir;
+    } else if (windSpeed.selected) {
+        return windspeedmph;
+    } else if (rain.selected) {
+        return rainin;
+    } else {
+        return temperature;
+
+    }
+}
+let dateUrl;
 
 function getBeginDate() {
-// draw();
-     return beginDate.value;
-
+    dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/date?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
+    loadJSON(dateUrl, (jsonData) => {
+        gotWeather(jsonData, () => {
+            drawGraphs();
+        })
+    });
+    return beginDate.value;
 }
 
 function getEndDate() {
-    //  dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
-    // loadJSON(dateUrl, gotWeather);
-    // draw();
-
+    console.log("got date");
+    dateUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/date?macAddress=A4:CF:12:8A:C8:24&from='${beginDate.value}'&to='${endDate.value}'`;
+    loadJSON(dateUrl, (jsonData) => {
+        gotWeather(jsonData, () => {
+            drawGraphs();
+        })
+    });
     return endDate.value;
 
 }
+let idUrl;
+
+function getId() {
+    idUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/id/${idUser.value}`;
+
+    loadJSON(idUrl, (jsonData) => {
+        gotWeatherID(jsonData, () => {
+            drawIds();
+        })
+    });
+
+     recorded_atSingle = 0; // the timezone is GMT
+     wind_dirSingle = 0;
+     windspeedmphSingle = 0;
+     raininSingle = 0;
+     temperatureSingle = 0;
+     humiditySingle = 0;
+     illuminanceSingle = 0;
+     uvindexSingle = 0;
+
+
+}
+
+function getAllData() {
+    console.log("alldata");
+    let allUrl = `https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24`;
+
+    loadJSON(allUrl, (jsonData) => {
+        gotWeather(jsonData, () => {
+            drawGraphs();
+        })
+    });
 
 
 
+}
+
+//p5 sketch 
+function setup() {
+    myCanvas = document.createElement("canvas");
+    myCanvas.id = 'myCanvas';
+    myCanvas = createCanvas(canvasWid, canvasHeight);
+    myCanvas.parent("sketch");
+    // Request the data from the weather band database
+    // To avoid 429, Too Many Requests Error 
+    // Replace cors everywhere with proxy forked by Yiting through this repo: https://github.com/Rob--W/cors-anywhere
+
+    background(230, 251, 255);
+    //drawGraphs();
+}
+
+let url = 'https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24';
+
+function preload() {
+
+    // load the json file
+    //loadJSON(url, gotWeather);
+}
+
+//for all and by date
+function gotWeather(weatherData, callback = () => {}) {
+
+    console.log("data length: " + weatherData.length)
+    // console.log(weatherData);
+
+    recorded_at = []; // the timezone is GMT
+    wind_dir = [];
+    winddir_avg2m = [];
+    windspeedmph = [];
+    rainin = [];
+    dailyrainin = [];
+    temperature = [];
+    humidity = [];
+    pressure = [];
+    illuminance = [];
+    uva = [];
+    uvb = [];
+    uvindex = [];
+
+    // add each weather data to the arrays
+    for (i = 0; i < weatherData.length; i++) {
+        recorded_at.push(weatherData[i].recorded_at);
+        wind_dir.push(weatherData[i].wind_dir);
+        winddir_avg2m.push(weatherData[i].winddir_avg2m);
+        windspeedmph.push(weatherData[i].windspeedmph);
+        rainin.push(weatherData[i].rainin);
+        dailyrainin.push(weatherData[i].dailyrainin);
+        temperature.push(weatherData[i].temperature);
+        humidity.push(weatherData[i].humidity);
+        pressure.push(weatherData[i].pressure);
+        illuminance.push(weatherData[i].illuminance);
+        uva.push(weatherData[i].uva);
+        uvb.push(weatherData[i].uvb);
+        uvindex.push(weatherData[i].uvindex);
+    }
+    console.log("finished pushing all the data");
+    callback();
+}
+
+let ID=30; 
+
+function drawIds() { 
+    background(250);
+
+    colorMode(HSB);
+    // draw linear graphs for each data to see the trend
+    // the mapping is done based on the average range of each weather data
+    noStroke();
+    fill(0,0,46);
+    textSize(32);
+    text("WEATHER DATA",30,50);
+    
+    
+    textSize(14);
+    text("from " + recorded_atSingle + " ID : " + idUser.value,30,75);
+    textSize(10);
+    text("Data collected with a DIY weather station in East Village, NY  by ITP Weather Band", 30, 95);
+    text("", 30, 100);
+    
+    fill(258,18,91);
+    textSize(14);
+    text("rain", 30, 150);
+    text(raininSingle, 30, 170);
+      let mappedR = map(raininSingle, 0, 1, 0, 50);
+      ellipse(200,150,mappedR,mappedR); 
+      console.log("raininsinglei n drawids",raininSingle)
+    
+    fill(183,29,89);
+    text("wind direction", 30, 250);
+    text(wind_dirSingle, 30, 270);
+      let mappedWD = map(wind_dirSingle, 0, 315, 0, 50);
+      ellipse(200,250,mappedWD,mappedWD);   
+    
+    fill(156,25,93);
+    text("wind speed", 30, 350);
+    text(windspeedmphSingle, 30, 370);
+      let mappedWS = map(windspeedmphSingle, 0, 5, 0, 50);
+      ellipse(200,350,mappedWS,mappedWS);   
+    
+    fill(93,28,94);
+    text("temperature", 30, 450);
+    text(temperatureSingle, 30, 470);
+      let mappedT = map(temperatureSingle, 0, 20, 0, 50);
+      ellipse(200,450,mappedT,mappedT);   
+      
+    fill(52,65,94);
+    text("illuminance", 30, 550);
+    text(illuminanceSingle, 30, 570);
+      let mappedI = map(illuminanceSingle, 0, 2500, 0, 50);
+      ellipse(200,550,mappedI,mappedI);
+      
+    fill(25,48,98);
+    text("uvindex", 30, 650);
+    text(uvindexSingle, 30, 670);
+      let mappedU = map(uvindexSingle, 0, 1, 0, 50);
+      ellipse(200,650,mappedU,mappedU);
+    
+    fill(0,25,99);
+    text("humidity", 30, 750);
+    text(humiditySingle, 30, 770);
+      let mappedH = map(humiditySingle, 50, 150, 0, 50);
+     ellipse(200,750,mappedH,mappedH); 
+  }
+  let recorded_atSingle = 0; // the timezone is GMT
+  let wind_dirSingle = 0;
+  let windspeedmphSingle = 0;
+  let raininSingle = 0;
+  let temperatureSingle = 0;
+  let humiditySingle = 0;
+  let illuminanceSingle = 0;
+  let uvindexSingle = 0;
+
+  function gotWeatherID(weatherData, callback = () => {}){
+      console.log(weatherData);
+
+      recorded_atSingle = weatherData.recorded_at; // the timezone is GMT
+      wind_dirSingle = weatherData.wind_dir;
+      windspeedmphSingle = weatherData.windspeedmph;
+      raininSingle = weatherData.rainin;
+      temperatureSingle = weatherData.temperature;
+      humiditySingle = weatherData.humidity;
+      illuminanceSingle = weatherData.illuminance;
+      uvindexSingle = weatherData.uvindex;
+  
+      console.log("recirded at single",recorded_atSingle);
+      callback();
+  
+    }
+//print out the cat text 
+function drawCat(category) {
+    background(230, 251, 255);
+    console.log(category);
+    text(catVal, 100, canvasHeight / 9);
+    for (i = 1; i < category.length; i++) {
+        let mapped = map(category[i], 0, 0.8, canvasHeight / 9, canvasHeight / 9.25);
+        ellipse(130 + i, mapped, 0.5, 0.5);
+    }
+    console.log("finished drawing by category");
+}
 
 
+function drawGraphs() { 
+    background(250);
+
+    colorMode(HSB);
+    // draw linear graphs for each data to see the trend
+    // the mapping is done based on the average range of each weather data
+    noStroke();
+    fill(0,0,46);
+    textSize(32);
+    text("WEATHER DATA",30,50);
+    textSize(14);
+    text("from " + beginDate.value + " to "+ endDate.value, 30, 75);
+    textSize(10);
+    text("Data collected with a DIY weather station in East Village, NY  by ITP Weather Band", 30, 95);
+    text("", 30, 100);
+    
+    noStroke();
+    let pos = mouseX-130
+    fill(258,18,91);
+    textSize(14);
+    text("rain", 30, 150);
+    for (i = 0; i < recorded_at.length; i++) {
+      let mapped = map(rainin[i], 0, 1, 150, 100);
+      stroke(258,18,91);
+      line(130+i,150,130+i,mapped); 
+      
+      let col = color(258,18,91);
+      showText(rainin[pos],"rain = ",col,100,150);
+    }
+    
+    noStroke();
+    fill(183,29,89);
+    textSize(14);
+    text("wind direction", 30, 250);
+  
+    for (i = 0; i < recorded_at.length; i++) {
+      let mapped = map(wind_dir[i], 0, 315, 250, 200);
+      let b = map(wind_dir[i], 0, 315,0,100);
+      stroke(183,29,89);
+      line(130+i,250,130+i,mapped);   
+      
+      let col = color(183,29,89);
+      showText(wind_dir[pos],"wind dir = ",col,200,250);
+    }
+    
+    noStroke();
+    fill(156,25,93);
+    textSize(14);
+    text("wind speed", 30, 350);
+    // beginShape();
+    for (i = 0; i < recorded_at.length; i++) {
+      let mapped = map(windspeedmph[i], 0, 5, 350, 300);
+      stroke(156,25,93);
+      line(130+i,350,130+i,mapped);   
+      
+      let col = color(156,25,93);
+      showText(windspeedmph[pos],"wind speed = ",col,300,350);
+    }
+    
+    noStroke();
+    fill(93,28,94);
+     textSize(14);
+    text("temperature", 30, 450);
+    for (i = 0; i < recorded_at.length; i++) {
+      let mapped = map(temperature[i], 0, 20, 450, 400);
+      stroke(93,28,94);
+      line(130+i,450,130+i,mapped);   
+      
+      let col = color(93,28,94);
+      showText(temperature[pos],"tempreature = ",col,400,450);
+    }
+    noStroke();
+    fill(52,65,94);
+     textSize(14);
+    text("illuminance", 30, 550);
+    for (i = 0; i < recorded_at.length; i++) {
+      let mapped = map(illuminance[i], 0, 2500, 550, 500);
+      stroke(52,47,99);
+      line(130+i,550,130+i,mapped);
+      
+      let col = color(52,65,94);
+      showText(illuminance[pos],"illuminance = ",col,500,550);
+    }
+    noStroke();
+    fill(25,48,98);
+     textSize(14);
+    text("uv index", 30, 650);
+    for (i = 0; i < recorded_at.length; i++) {
+      let mapped = map(uvindex[i], 0, 1, 650, 600);
+      stroke(25,48,98);
+      line(130+i,650,130+i,mapped);
+      
+       let col = color(25,48,98);
+      showText(uvindex[pos],"uv = ",col,600,650);
+    }
+    
+    noStroke();
+    fill(0,25,99);
+     textSize(14);
+    text("humidity", 30, 750);
+    for (i = 0; i < recorded_at.length; i++) {
+      let mapped = map(humidity[i], 50, 150, 750, 700);
+     stroke(0,25,99);
+     line(130+i,750,130+i,mapped); 
+  
+      let col = color(0,25,99);
+      showText(humidity[pos],"humidity = ",col,700,750);
+    }
+  }
+  
+  function showText(data,word,col,hMin,hMax){
+    textSize(10);
+    if(mouseX >=130&mouseX<=130+recorded_at.length& mouseY>=hMin &mouseY <=hMax){
+      let txt = word +data;
+      let txtW = textWidth(txt);
+      noStroke();
+      fill(255);
+      rect(mouseX-5,mouseY-12,txtW+10,16);
+      fill(col);
+      text(txt,mouseX,mouseY);    
+       } 
+  }
+    
 // scrolling example from https://taufik-nurrohman.js.org/dte-project/full-page-horizontal-scrolling.html
 //https://jsfiddle.net/64p5r459/2/
 //scrolling not working 
@@ -211,120 +569,5 @@ if (sketch.addEventListener) {
 }
 
 
-//p5 sketch 
-function setup() {
-    myCanvas = document.createElement("canvas");
-    myCanvas.id = 'myCanvas';
-    myCanvas = createCanvas(canvasWid, canvasHeight);
-    myCanvas.parent("sketch");
-    // Request the data from the weather band database
-    // To avoid 429, Too Many Requests Error 
-    // Replace cors everywhere with proxy forked by Yiting through this repo: https://github.com/Rob--W/cors-anywhere
-
-}
-
-//create functions for each gotweather data so the format will be different 
-
-function preload() {
-    let url = 'https://proxy-server-yt.herokuapp.com/http://weatherband.itp.io:3000/data/all?macAddress=A4:CF:12:8A:C8:24';
-
-    // load the json file
-    // loadJSON(url, gotWeather);
-    //if all is selected, do the json for all 
-    // if cat 
-    loadJSON(url, console.log("loaded"));
-
-}
-
-function draw() {
-    background(230, 251, 255);
-    drawGraphs();
-    // getItems();
-
-    // loadJSON(dateUrl, gotWeather);
-
-}
-
-
-function gotWeather(weatherData) {
-    // add each weather data to the arrays
-    for (i = starting_id; i < weatherData.length; i++) {
-        recorded_at.push(weatherData[i].recorded_at);
-        wind_dir.push(weatherData[i].wind_dir);
-        winddir_avg2m.push(weatherData[i].winddir_avg2m);
-        windspeedmph.push(weatherData[i].windspeedmph);
-        rainin.push(weatherData[i].rainin);
-        dailyrainin.push(weatherData[i].dailyrainin);
-        temperature.push(weatherData[i].temperature);
-        humidity.push(weatherData[i].humidity);
-        pressure.push(weatherData[i].pressure);
-        illuminance.push(weatherData[i].illuminance);
-        uva.push(weatherData[i].uva);
-        uvb.push(weatherData[i].uvb);
-        uvindex.push(weatherData[i].uvindex);
-    }
-
-    // pring out the arrays loaded with weather data
-    // console.log(recorded_at);
-    // console.log(wind_dir);
-    // console.log(winddir_avg2m);
-    // console.log(windspeedmph);
-    // console.log(rainin);
-    // console.log(dailyrainin);
-    // console.log(temperature);
-    // console.log(windspeedmph);
-    // console.log(humidity);
-    // console.log(pressure);
-    // console.log(illuminance);
-    // console.log(uva);
-    // console.log(uvb);
-}
-
-function drawGraphs() {
-
-    // draw linear graphs for each data to see the trend
-    // the mapping is done based on the average range of each weather data
-    text("Weather data from " + recorded_at[0] + "(GMT) and onwards", 30, canvasHeight / 9 * 0.35);
-    text("Data collected with a DIY weather station in East Village, NY", 30, canvasHeight / 9 * 0.55);
-
-    text("rainin", 30, canvasHeight / 9);
-    for (i = 0; i < recorded_at.length; i++) {
-        let mapped = map(rainin[i], 0, 0.8, canvasHeight / 9, canvasHeight / 9.25);
-        ellipse(130 + i, mapped, 0.5, 0.5);
-    }
-    text("dailyrainin", 30, canvasHeight / 9 * 2);
-    for (i = 0; i < recorded_at.length; i++) {
-        let mapped = map(dailyrainin[i], 0, 1, canvasHeight / 9 * 2, canvasHeight / 9 * 2.25);
-        ellipse(130 + i, mapped, 0.5, 0.5);
-    }
-    text("wind_dir", 30, canvasHeight / 9 * 3);
-    for (i = 0; i < recorded_at.length; i++) {
-        let mapped = map(wind_dir[i], 0, 315, canvasHeight / 9 * 3, canvasHeight / 9 * 3.25);
-        ellipse(130 + i, mapped, 0.5, 0.5);
-    }
-    text("windspeedmph", 30, canvasHeight / 9 * 4);
-    for (i = 0; i < recorded_at.length; i++) {
-        let mapped = map(windspeedmph[i], 0, 5, canvasHeight / 9 * 4, canvasHeight / 9 * 4.25);
-        ellipse(130 + i, mapped, 0.5, 0.5);
-    }
-    text("temperature", 30, canvasHeight / 9 * 5);
-    for (i = 0; i < recorded_at.length; i++) {
-        let mapped = map(temperature[i], 10, 70, canvasHeight / 9 * 5, canvasHeight / 9 * 5.25);
-        ellipse(130 + i, mapped, 0.5, 0.5);
-    }
-    text("illuminance", 30, canvasHeight / 9 * 6);
-    for (i = 0; i < recorded_at.length; i++) {
-        let mapped = map(illuminance[i], 0, 2500, canvasHeight / 9 * 6, canvasHeight / 9 * 6.25);
-        ellipse(130 + i, mapped, 0.5, 0.5);
-    }
-    text("uv index", 30, canvasHeight / 9 * 7);
-    for (i = 0; i < recorded_at.length; i++) {
-        let mapped = map(uvindex[i], 0, 4, canvasHeight / 9 * 7, canvasHeight / 9 * 7.25);
-        ellipse(130 + i, mapped, 0.5, 0.5);
-    }
-    text("humidity", 30, canvasHeight / 9 * 8);
-    for (i = 0; i < recorded_at.length; i++) {
-        let mapped = map(humidity[i], 0, 100, canvasHeight / 9 * 8, canvasHeight / 9 * 8.25);
-        ellipse(130 + i, mapped, 0.5, 0.5);
-    }
-}
+//bugs:
+//need to change date values or it won't send the request. cannot submit the same date value
